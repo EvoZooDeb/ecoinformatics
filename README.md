@@ -1,2 +1,2 @@
 # ecoinformatics
-Ökoinformatika kurzus informatikus hallgatóknak
+Ökoinformatika programozás kurzus
