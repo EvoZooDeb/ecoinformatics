@@ -1,0 +1,33 @@
+{
+  "name": "OpenBioMaps PWA v1.0",
+  "short_name": "OpenBioMapsPWA",
+  "icons": [{
+    "src": "images/icons/iOS/Icon-128.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    }, {
+      "src": "images/icons/Android/Icon-144.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    }, {
+      "src": "images/icons/iOS/Icon-152.png",
+      "sizes": "152x152",
+      "type": "image/png"
+    }, {
+      "src": "images/icons/Android/Icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }, {
+      "src": "images/icons/iOS/Icon-256.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    }, {
+      "src": "images/icons/Android/Icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }],
+  "start_url": "index.php",
+  "display": "standalone",
+  "background_color": "#ececec",
+  "theme_color": "#0a7a99"
+}
