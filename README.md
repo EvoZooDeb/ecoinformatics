@@ -3,5 +3,7 @@
 
 
 PWA
+```
 cd pwa
 php -S localhost:8000
+```
