@@ -34,6 +34,7 @@ $minDistanceInput = 1;
   <meta name="description" content="OpenBioMaps Map Query App">
   <!-- meta theme-color -->
   <meta name="theme-color" content="#aad2dd" />
+  <link rel="stylesheet" href="./form-styles.css">
   <link rel="stylesheet" href="https://openlayers.org/en/v5.3.0/css/ol.css" type="text/css">
   <link rel="stylesheet" href="https://unpkg.com/purecss@2.1.0/build/pure-min.css" integrity="sha384-yHIFVG6ClnONEA5yB5DJXfW2/KC173DIQrYoZMEtBvGzmf0PKiGyNEqe9N6BNDBH" crossorigin="anonymous">
   <link rel="stylesheet" type="text/css" href="styles/fontawesome-free-6.1.1-web/css/fontawesome.min.css">
@@ -49,10 +50,6 @@ $minDistanceInput = 1;
   <script src="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.3.0/build/ol.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
-  <script>
-    let form = '{"mezo1":{"title":"","type":"",...},...}';
-  </script>
   <title><?php echo PROJECTTABLE ?></title>
 </head>
 <body>
@@ -70,9 +67,19 @@ $minDistanceInput = 1;
 <div id='geoinfo' style='padding:6px;border-radius:5px;position:fixed;top:60px;right:5px;background-color:white;opacity:0.85;z-index:1001;overflow-y: auto;'><span id='accuracy'></span> <span id='speed'></span></div>
 
 <!--Ide jön a form -->
-<div style='width:400px;height:600px;left:50%;top:50%;position:absolute;background-color:white'>
-<div>
-
+<button type="button" class="open-form-button" onclick="showSpeciesForm()">-></button>
+<div class="form-container">
+    <form action="/action_page.php" class="species-counter-form">
+        <div>
+            <select class="dropdown-menu-js" name="fajok" selected="Válasszon egy fajt..."></select>
+        </div>
+        <button class="choose-species" type="button" onclick="addOption()"> Kiválaszt </button>
+    </form>
+    <button type="submit" class="species-form-submit" onclick="submitData()"> Küldés </button>
+    <div class="species-form-close" onclick="hideSpeciesForm()">x</div>
+</div>
+<script src="./scripts/species-counting-form.js"></script>
+<script src="./scripts/species-form-dropdown-content.js"></script>
 
 <div style='position:absolute;right:0px;bottom:0px;padding:10px;background-color:white;opacity:0.8;display:none'>
     <i class="fa-solid fa-circle-nodes"></i> <select id='typeSelect'>

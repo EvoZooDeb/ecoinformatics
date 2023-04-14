@@ -130,14 +130,20 @@ body {
 .card-spinner svg circle {
   animation: line 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite, rotate 1.6s linear infinite;
   box-sizing: border-box;
-  stroke: #30334b; /* #3f51b5;*/
+  stroke: #30334b;
+  /* #3f51b5;*/
   stroke-width: 3px;
   transform-origin: 50%;
 }
 
 @keyframes rotate {
-  from { transform: rotate(0); }
-  to { transform: rotate(450deg); }
+  from {
+    transform: rotate(0);
+  }
+
+  to {
+    transform: rotate(450deg);
+  }
 }
 
 @keyframes line {
@@ -184,7 +190,8 @@ body {
 }
 
 .main .fab {
-  background-color: #30334b; /* #3f51b5;*/
+  background-color: #30334b;
+  /* #3f51b5;*/
   border-radius: 50%;
   bottom: 1rem;
   height: 56px;
@@ -237,7 +244,7 @@ body {
   transition: transform 0.333s cubic-bezier(0, 0, 0.21, 1) 0.05s;
 }
 
-.dialog > div {
+.dialog>div {
   padding-left: 24px;
   padding-right: 24px;
 }
@@ -273,12 +280,14 @@ body {
   margin: 0;
   height: 100%;
   width: 100%;
-  font-family:sans-serif;
+  font-family: sans-serif;
 }
+
 .locate {
   top: 5em;
   left: .5em;
 }
+
 .track {
   top: 8em;
   left: .5em;
@@ -286,17 +295,26 @@ body {
 
 /* The Modal (background) */
 .modal {
-  display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
-  padding-top: 100px; /* Location of the box */
+  display: none;
+  /* Hidden by default */
+  position: fixed;
+  /* Stay in place */
+  z-index: 1;
+  /* Sit on top */
+  padding-top: 100px;
+  /* Location of the box */
   left: 0;
   top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  width: 100%;
+  /* Full width */
+  height: 100%;
+  /* Full height */
+  overflow: auto;
+  /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0);
+  /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4);
+  /* Black w/ opacity */
 }
 
 /* Modal Content */
@@ -307,18 +325,21 @@ body {
   border: 1px solid #888;
   width: fit-content;
   width: max-content;
-  border-radius:5px;
+  border-radius: 5px;
 }
+
 .modal-content input {
-  border-radius:3px;
-  padding:5px;
-  border:1px solid #afafaf;
-￼ color: #3f3f3f;
+  border-radius: 3px;
+  padding: 5px;
+  border: 1px solid #afafaf;
+  color: #3f3f3f;
 }
+
 .button-xlarge {
   font-size: 120% !important;
   font-weight: bold;
 }
+
 .button-success,
 .button-error,
 .button-warning,
@@ -327,24 +348,28 @@ body {
   border-radius: 4px;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 }
+
 .button-success {
   background-color: rgb(159, 198, 81);
   border: solid #8BAD47 1px;
   color: #3f3f3f;
 }
+
 .button-secondary {
-   background: rgb(66, 184, 221);
+  background: rgb(66, 184, 221);
 }
+
 .button-warning {
-   background: rgb(223, 117, 20);
+  background: rgb(223, 117, 20);
 }
+
 /* The Close Button */
 .close {
   color: #aaaaaa;
   float: right;
   font-size: 28px;
   font-weight: bold;
-    margin:-15px;
+  margin: -15px;
 }
 
 .close:hover,
@@ -353,5 +378,3 @@ body {
   text-decoration: none;
   cursor: pointer;
 }
-
-
