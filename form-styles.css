@@ -1,0 +1,99 @@
+.open-form-button {
+    position: absolute;
+    left: 0;
+    top: 30%;
+    margin: 10px;
+}
+
+.form-container {
+    display: none;
+    flex-direction: column;
+    user-select: none;
+    background: transparent;
+    background-size: cover;
+    width: 400px;
+    height: 600px;
+    padding: 30px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(255, 255, 255, 0.8);
+    overflow: auto;
+}
+
+.species-counter-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.species-counter-form label {
+    display: block;
+}
+
+.species-counter-form select {
+    display: block;
+    width: 300px;
+    margin: 10px 0px;
+}
+
+.choose-species {
+    cursor: pointer;
+    margin: auto;
+}
+
+.counter-element {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0.5rem 0px;
+}
+
+.counter-element button {
+    width: 2rem;
+    height: 2rem;
+    margin: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.counter-element button:nth-child(4) {
+    color: red;
+}
+
+.counter-element .input-counter {
+    display: grid;
+    place-content: center;
+    width: 200px;
+    height: 2rem;
+    text-align: center;
+    margin: 10px, 20px;
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 1px;
+}
+
+.species-form-close {
+    height: 30px;
+    width: 30px;
+    color: rgb(255, 78, 78);
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: grid;
+    place-content: center;
+    cursor: pointer;
+}
+
+.species-form-close:hover {
+    background-color: rgb(255, 78, 78);
+    color: black;
+    transition: 100ms linear;
+}
+
+.species-form-submit {
+    margin: 20px 0px;
+    align-self: center;
+    display: none;
+}
