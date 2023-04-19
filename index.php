@@ -3,8 +3,9 @@
 #require_once(getenv('PROJECT_DIR').'local_vars.php.inc');
 
 $protocol = 'http';
-define('PROJECTTABLE','valami');
-define('URL','valami');
+define('PROJECTTABLE','Beporzó monitoring');
+define('LOCATION','Mintavételi hely');
+define('URL','openbiomaps.org/projects/pollimon');
 
 # wms cluster layer name
 # layer_data_MY-CLUSTER-LAYER for cname created automatically
@@ -54,8 +55,8 @@ $minDistanceInput = 1;
 </head>
 <body>
 <header class="header">
-    <h1><form method='get'><?php echo ucfirst(PROJECTTABLE) ?>: 
-        <select name='table' id='table_list' onchange='this.form.submit()'><option></option><option><?php echo PROJECTTABLE ?></option></select>
+    <h1><form id='sample_site'><?php echo ucfirst(LOCATION) ?>: 
+        <select id='site_name'></select>
         </form></h1>
     <button id="butInstall" aria-label="Install" hidden></button>
     <i class='fa-solid fa-eye' id="togglekeep" title="Wake Lock is enabled" style='color:lightskyblue'></i>
@@ -63,7 +64,7 @@ $minDistanceInput = 1;
 <script src="scripts/install.js"></script>
 <div style='min-height:56px'></div>
 <div id="map" class="map"></div>
-<div id='info' style='padding:6px;border-radius:5px;position:fixed;bottom:10px;left:10px;max-height:220px;width:auto;background-color:white;opacity:0.85;z-index:1;overflow-y: auto;'></div>
+<div id='info' style='padding:6px;border-radius:5px;position:fixed;bottom:10px;right:10px;max-height:220px;width:auto;background-color:white;opacity:0.85;z-index:1;overflow-y: auto;'></div>
 <div id='geoinfo' style='padding:6px;border-radius:5px;position:fixed;top:60px;right:5px;background-color:white;opacity:0.85;z-index:1001;overflow-y: auto;'><span id='accuracy'></span> <span id='speed'></span></div>
 
 <!--Ide jön a form -->
@@ -81,17 +82,6 @@ $minDistanceInput = 1;
 <script src="./scripts/species-counting-form.js"></script>
 <script src="./scripts/species-form-dropdown-content.js"></script>
 
-<div style='position:absolute;right:0px;bottom:0px;padding:10px;background-color:white;opacity:0.8;display:none'>
-    <i class="fa-solid fa-circle-nodes"></i> <select id='typeSelect'>
-        <option value=''>Viewport</option>
-        <option value='Polygon'>Polygon draw/edit</option>
-        <option value='Circle'>Circle draw/edit</option>
-    </select>
-    <br>
-    <br>
-    <button onclick='filter()' class='pure-button button-secondary' style='color:#fffb2a'>filter</button>
-    <button onclick='clearF()' class='pure-button button-warning'>clear</button>
-  </div>
 <div id="myAuthModal" class="modal">
 <div class="modal-content">
     <span class="close" onclick="Close('myAuthModal')">&times;</span>
@@ -116,6 +106,9 @@ $minDistanceInput = 1;
     </div>-->
 
 <script type="text/javascript">
+    $(document).ready(function() {
+        filter();
+    });
     function Close(e) {
         let el = document.getElementById(e);
         el.style.display = "none";
@@ -559,28 +552,6 @@ $minDistanceInput = 1;
     map.addInteraction(snap);
     */
 
-    let snap, draw;
-    const typeSelect = document.getElementById('typeSelect');
-
-    function addInteractions() {
-        if (typeSelect.value != '') {
-            draw = new ol.interaction.Draw({
-                source: drawSource,
-                type: typeSelect.value,
-            });
-            map.addInteraction(draw);
-            snap = new ol.interaction.Snap({source: drawSource});
-            map.addInteraction(snap);
-        } else {
-            drawSource.clear(true);
-        }
-    }
-    typeSelect.onchange = function () {
-        map.removeInteraction(draw);
-        map.removeInteraction(snap);
-        addInteractions();
-    };
-    addInteractions();
 
     let properties;
 
@@ -594,18 +565,18 @@ $minDistanceInput = 1;
         const info = document.getElementById('info');
         info.innerHTML = '<span class="close" @click="Close(\'info\')" style="margin:0">&times;</span>';
         info.style.display = 'block';
-        if (clickedFeatures && typeSelect.value == '') {
+        if (clickedFeatures) {
             const cfeatures = clickedFeatures.get('features');
             if (cfeatures.length) {
                 let text;
                 let n = 0;
                 cfeatures.forEach((e, index, arr) => {
                     n++;
-                    properties.forEach((p) => {
-                        if (e.get(p) != null) {
-                            info.innerHTML += '<b>' + p + '</b>: ' + e.get(p) + '<br>';
-                        }
-                    })
+                    properties = e.getProperties();
+                    Object.keys(properties).forEach(key => {
+                        if (key == 'geometry') { return; }
+                        info.innerHTML += '<b>' + key + '</b>: ' + properties[key] + '<br>';
+                    });
                     info.innerHTML += '<hr>';
                     if (n > 5) {
                         info.innerHTML += '....';
@@ -613,7 +584,7 @@ $minDistanceInput = 1;
                     }
                 });
             }
-        } else if (typeSelect.value == ''){
+        } else {
             //Zoom to click
             let v = e.coordinate;
             
@@ -624,6 +595,14 @@ $minDistanceInput = 1;
             map.getView().animate({center: [v[0],v[1]]}, {zoom: eval(actualZoom + 2)});
         }
     });
+    map.on('moveend', function(e) {
+        //var newZoom = map.getView().getZoom();
+        //if (currZoom != newZoom) {
+            filter();
+        //    currZoom = newZoom;
+        //}
+    });
+
       
     /* Tracklogging
         - Trackline draw
@@ -720,7 +699,8 @@ $minDistanceInput = 1;
     map.addControl(new ol.control.Control({
         element: locate
     }));
-
+    var currZoom = map.getView().getZoom();
+    
     var clearF = function(e) {
         console.log('clear');
         wmsLayer.setVisible(true);
@@ -729,85 +709,84 @@ $minDistanceInput = 1;
         drawSource.clear(true);
     }
     var filter = function(e) {
-        //console.log('filter');
 
         var actualZoom = map.getView().getZoom();
 
-        // Preventing fetching too much data..
-        //console.log(actualZoom)
+        // Prevent fetching too much data..
         if (actualZoom<<?php echo $min_zoom_for_filter ?>) {
-            alert("Zoom closer to query less data.\nToo much data can cause problems for the clients.")
             return;
         }
 
-        let features = drawSource.getFeatures();
-        if (!features.length) {
-            let extent = map.getView().calculateExtent(map.getSize());
-            let polygon = new ol.geom.Polygon.fromExtent(extent);
-            polygon.scale(0.85, 0.85)
-            features = [new ol.Feature(polygon)];
-            drawSource.addFeatures(features);
-        }
+        let polygonFeature;
+        let extent = map.getView().calculateExtent(map.getSize());
+        let polygon = new ol.geom.Polygon.fromExtent(extent);
+        polygon.scale(0.85, 0.85)
+        features = [new ol.Feature(polygon)];
+        drawSource.addFeatures(features);
+        polygonFeature = new ol.Feature(new ol.geom.Polygon(features[0].getGeometry().getCoordinates()));
 
         let format = new ol.format.WKT();
         let src = 'EPSG:3857';
         let dest = 'EPSG:4326';
-        //let features = drawSource.getFeatures();
-        let wktRepresenation = []
-        features.forEach(function(element) {
-
-            let type = element.getGeometry().getType();
-            if (type == 'Circle') {
-                let circlepolygon = new ol.geom.Polygon.fromCircle(element.getGeometry().clone());
-                wktRepresenation.push(format.writeGeometry(circlepolygon.transform(src,dest)));
-            } else {
-                wktRepresenation.push(format.writeGeometry(element.getGeometry().clone().transform(src,dest)));
-            }
-        });
+        let wktRepresenation = format.writeGeometry(polygonFeature.getGeometry().clone().transform(src,dest));
 
         let myFeatures;
+
+        // example answer for developing - avoiding cors error in localhost
+        //
+        //[{"obm_id":"1","uploader_name":"B\u00e1n Mikl\u00f3s","uploading_date":"2023-04-02 16:36:22.897174","uploading_id":"38134","hist_time":"","name":"botkert 1","obm_files_id":"","obm_geometry":"POINT(21.6214855 47.5581552)","observer":"banm@vocs.unideb.hu","q":"1"},{"obm_id":"2","uploader_name":"B\u00e1n Mikl\u00f3s","uploading_date":"2023-04-02 16:36:22.897174","uploading_id":"38134","hist_time":"","name":"botkert 2","obm_files_id":"","obm_geometry":"POINT(21.6221461 47.5587459)","observer":"banm@vocs.unideb.hu","q":"1"}]
+
         $.ajax({
-            type: "POST",
-            url: 'https://<?php echo URL ?>/v2.4/pds.php',
-            data: {
-                access_token: access_token,
-                scope: 'get_data',
-                value: 'filter',
-                type: 'geojson',
-                table: '<?php echo isset($_GET['table']) ? $_GET['table'] : PROJECTTABLE ?>', 
-                filters: {
-                    obm_geometry: wktRepresenation,
-                    //species: 'Passer montanus'
-                }
-            },
+            type: "GET",
+            url: 'https://<?php echo URL ?>/index.php?query&qtable=pollimon_sample_plots&geom_selection=wktquery&geometry=' + wktRepresenation + '&output=json&filename=',
             dataType: 'json',
             //async: false,
             success: function (response) {
-
+                let features = new Array;
+                let plotnames = {};
+                for (let k=0;k<response.length;k++) {
+                    let feature = new ol.format.WKT().readFeatures(response[k].obm_geometry,{
+                        'dataProjection': "EPSG:4326",
+                        'featureProjection': "EPSG:3857"});
+                    feature[0].setProperties(response[k]);
+                    plotnames[response[k].obm_id] = response[k].name;
+                    features.push(feature[0]);
+                }
+                $('#site_name').find('option').remove();
+                $.each(plotnames, function(key, value) {   
+                     $('#site_name')
+                         .append($("<option></option>")
+                                    .attr("value", key)
+                                    .text(value)); 
+                });  
                 clusterSource.getSource().clear(true);
                 clusters.setVisible(true);
-                if (response['status'] != 'success') {
-                    localforage.getItem('MyFeatures').then(function(readValue) {
-                        addClusterFeatures(readValue);
-                    });
-                } else {
-                    // Set localforage
-                    localforage.setDriver([
-                        localforage.INDEXEDDB,
-                        localforage.WEBSQL,
-                        localforage.LOCALSTORAGE
-                    ]).then(function() {
-                        var key = 'MyFeatures';
-                        localforage.setItem(key, response, function() {});
-                    });
-                    addClusterFeatures(response);
-                }
+                addClusterFeatures(features);
             }, 
             error: function () {
-                localforage.getItem('MyFeatures').then(function(readValue) {
-                    console.log('Read: ', readValue);
-                    addClusterFeatures(readValue);
-                });
+                // For localhost developers:
+                let response = [{"obm_id":"1","uploader_name":"B\u00e1n Mikl\u00f3s","uploading_date":"2023-04-02 16:36:22.897174","name":"botkert 1","obm_files_id":"","obm_geometry":"POINT(21.6214855 47.5581552)","observer":"valalki"},{"obm_id":"2","uploader_name":"B\u00e1n Mikl\u00f3s","uploading_date":"2023-04-02 16:36:22.897174","uploading_id":"38134","name":"botkert 2","obm_files_id":"","obm_geometry":"POINT(21.6221461 47.5587459)","observer":"valalki"}];
+                let features = new Array;
+                let plotnames = {};
+                for (let k=0;k<response.length;k++) {
+                    let feature = new ol.format.WKT().readFeatures(response[k].obm_geometry,{
+                        'dataProjection': "EPSG:4326",
+                        'featureProjection': "EPSG:3857"});
+                    feature[0].setProperties(response[k]);
+                    plotnames[response[k].obm_id] = response[k].name;
+                    features.push(feature[0]);
+                }
+                $('#site_name').find('option').remove();
+                $.each(plotnames, function(key, value) {   
+                     $('#site_name')
+                         .append($("<option></option>")
+                                    .attr("value", key)
+                                    .text(value)); 
+                });  
+                clusterSource.getSource().clear(true);
+                clusters.setVisible(true);
+                addClusterFeatures(features);
+                // Delete it at end of early development
             }
         });
 
@@ -832,30 +811,9 @@ $minDistanceInput = 1;
         document.cookie = cname + "=" + JSON.stringify(cookie) + ";" + expires + ";path=/";
     }
     function addClusterFeatures(myFeatures) {
-        // Only pointfeatures are valid for clustering
-        pointFeatures = [];
-        for (let k=0;k<myFeatures['data'][0]['features'].length;k++) {
-            let f = myFeatures['data'][0]['features'][k];
-            //console.log(f);
-            if (f['geometry']['type']=='Point') {
-                pointFeatures.push(f);
-            }
-            if (k==0) {
-                properties = Object.keys(f['properties']);
-            }
-        }
-        myFeatures['data'][0]['features'] = pointFeatures;
-
         wmsLayer.setVisible(false);
-        const features = new ol.format.GeoJSON().readFeatures(myFeatures['data'][0],{
-            'dataProjection': "EPSG:4326",
-            'featureProjection': "EPSG:3857"});
-        clusterSource.getSource().addFeatures(features);
+        clusterSource.getSource().addFeatures(myFeatures);
         drawSource.clear(true);
-        typeSelect.value = '';
-        map.removeInteraction(draw);
-        map.removeInteraction(snap);
-        addInteractions();
     }
 </script>
 <script>
