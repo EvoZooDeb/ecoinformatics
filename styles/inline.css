@@ -339,6 +339,16 @@ body {
   font-size: 120% !important;
   font-weight: bold;
 }
+/* emulating ol buttons */
+.button-ol {
+    padding: 0px;
+    width: 2.6em;
+    line-height: 0.4;
+    text-align:center;
+    margin:1px;
+    font-weight:bold;
+}
+
 
 .button-success,
 .button-error,
@@ -356,7 +366,7 @@ body {
 }
 
 .button-secondary {
-  background: rgb(66, 184, 221);
+  background: rgba(0,60,136,.5);
 }
 
 .button-warning {

@@ -23,7 +23,7 @@ function addOption() {
     removeButton.type = "button";
     removeButton.innerHTML = " x ";
     removeButton.onclick = () => {
-        if (confirm("eltávolítja ezt az opciót?")) {
+        if (confirm("Eltávolítja ezt a fajt?")) {
             newBox.remove()
             if (document.getElementsByClassName("counter-element").length === 0) {
                 submitButton = document.querySelector(".species-form-submit");
@@ -49,16 +49,19 @@ function addOption() {
         submitButton = document.querySelector(".species-form-submit");
         submitButton.style.display = "block";
     }
+    $("#fajok").val(['undefined']);
 }
 
 function showSpeciesForm() {
     let formContainer = document.querySelector(".form-container");
     formContainer.style.display = "flex";
+    $("#open-form-button").hide();
 }
 
 function hideSpeciesForm() {
     let formContainer = document.querySelector(".form-container");
     formContainer.style.display = "none";
+    $("#open-form-button").show();
 }
 
 function submitData() {

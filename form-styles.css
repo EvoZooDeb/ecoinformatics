@@ -1,24 +1,24 @@
 .open-form-button {
     position: absolute;
-    left: 0;
-    top: 30%;
-    margin: 10px;
+    left: 0.6em;
+    bottom: 28em;
 }
 
 .form-container {
-    display: none;
     flex-direction: column;
     user-select: none;
     background: transparent;
     background-size: cover;
-    width: 400px;
-    height: 600px;
-    padding: 30px;
+    min-height: 30em;
+    max-height: 80%;
+    padding: 1em;
     position: absolute;
     bottom: 0;
     left: 0;
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(0, 60, 136, 0.5);
     overflow: auto;
+    border-right:1px solid rgb(0,60,136);
+    border-top:1px solid rgb(0,60,136);
 }
 
 .species-counter-form {
@@ -34,8 +34,8 @@
 
 .species-counter-form select {
     display: block;
-    width: 300px;
-    margin: 10px 0px;
+    margin: 1em 0px;
+    width:100%;
 }
 
 .choose-species {
@@ -77,7 +77,7 @@
 .species-form-close {
     height: 30px;
     width: 30px;
-    color: rgb(255, 78, 78);
+ /*   color: rgb(255, 78, 78);*/
     position: absolute;
     top: 0;
     right: 0;

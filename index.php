@@ -35,12 +35,12 @@ $minDistanceInput = 1;
   <meta name="description" content="OpenBioMaps Map Query App">
   <!-- meta theme-color -->
   <meta name="theme-color" content="#aad2dd" />
-  <link rel="stylesheet" href="./form-styles.css">
+  <link rel="stylesheet" type="text/css" href="./form-styles.css?v1">
   <link rel="stylesheet" href="https://openlayers.org/en/v5.3.0/css/ol.css" type="text/css">
   <link rel="stylesheet" href="https://unpkg.com/purecss@2.1.0/build/pure-min.css" integrity="sha384-yHIFVG6ClnONEA5yB5DJXfW2/KC173DIQrYoZMEtBvGzmf0PKiGyNEqe9N6BNDBH" crossorigin="anonymous">
   <link rel="stylesheet" type="text/css" href="styles/fontawesome-free-6.1.1-web/css/fontawesome.min.css">
   <link rel="stylesheet" type="text/css" href="styles/fontawesome-free-6.1.1-web/css/solid.min.css">
-  <link rel="stylesheet" type="text/css" href="styles/inline.css?1">
+  <link rel="stylesheet" type="text/css" href="styles/inline.css?2">
   <!-- The line below is only needed for old environments like Internet Explorer and Android 4.x -->
   <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
   <!-- Local stroge -->
@@ -51,12 +51,14 @@ $minDistanceInput = 1;
   <script src="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.3.0/build/ol.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <title><?php echo PROJECTTABLE ?></title>
 </head>
 <body>
 <header class="header">
-    <h1><form id='sample_site'><?php echo ucfirst(LOCATION) ?>: 
-        <select id='site_name'></select>
+    <h1><form id='sample_site' class=""> 
+        <select id='site_name' class="" name="site_name" selected="<?php echo ucfirst(LOCATION) ?>"><option><?php echo ucfirst(LOCATION) ?></option></select>
+        <input id='observer' name="observer" placeholder="megfigyelő">
         </form></h1>
     <button id="butInstall" aria-label="Install" hidden></button>
     <i class='fa-solid fa-eye' id="togglekeep" title="Wake Lock is enabled" style='color:lightskyblue'></i>
@@ -68,19 +70,18 @@ $minDistanceInput = 1;
 <div id='geoinfo' style='padding:6px;border-radius:5px;position:fixed;top:60px;right:5px;background-color:white;opacity:0.85;z-index:1001;overflow-y: auto;'><span id='accuracy'></span> <span id='speed'></span></div>
 
 <!--Ide jön a form -->
-<button type="button" class="open-form-button" onclick="showSpeciesForm()">-></button>
+<button type="button" id="open-form-button" class="pure-button button-ol button-secondary open-form-button" onclick="showSpeciesForm()"><i class="material-icons" style="font-size:24px;">keyboard_double_arrow_right</i></button>
 <div class="form-container">
-    <form action="/action_page.php" class="species-counter-form">
-        <div>
-            <select class="dropdown-menu-js" name="fajok" selected="Válasszon egy fajt..."></select>
+    <form action="/action_page.php" class="pure-form species-counter-form">
+        <div style='width:100%'>
+            <select class="pure-button dropdown-menu-js" id="fajok" name="fajok" selected="Válasszon egy fajt..." onchange="addOption()"></select>
         </div>
-        <button class="choose-species" type="button" onclick="addOption()"> Kiválaszt </button>
     </form>
-    <button type="submit" class="species-form-submit" onclick="submitData()"> Küldés </button>
-    <div class="species-form-close" onclick="hideSpeciesForm()">x</div>
+    <button type="submit" class="pure-button button-success species-form-submit" style="display:none" onclick="submitData()"> Adatok beküldése </button>
+    <div class="species-form-close" onclick="hideSpeciesForm()"><i class="material-icons" style="font-size:20px">cancel</i></div>
 </div>
-<script src="./scripts/species-counting-form.js"></script>
-<script src="./scripts/species-form-dropdown-content.js"></script>
+<script src="./scripts/species-counting-form.js?v1"></script>
+<script src="./scripts/species-form-dropdown-content.js?v1"></script>
 
 <div id="myAuthModal" class="modal">
 <div class="modal-content">
@@ -108,6 +109,7 @@ $minDistanceInput = 1;
 <script type="text/javascript">
     $(document).ready(function() {
         filter();
+        $("#open-form-button").hide();
     });
     function Close(e) {
         let el = document.getElementById(e);
@@ -596,11 +598,7 @@ $minDistanceInput = 1;
         }
     });
     map.on('moveend', function(e) {
-        //var newZoom = map.getView().getZoom();
-        //if (currZoom != newZoom) {
-            filter();
-        //    currZoom = newZoom;
-        //}
+        filter();
     });
 
       
@@ -744,12 +742,14 @@ $minDistanceInput = 1;
             success: function (response) {
                 let features = new Array;
                 let plotnames = {};
+                let usernames = {};
                 for (let k=0;k<response.length;k++) {
                     let feature = new ol.format.WKT().readFeatures(response[k].obm_geometry,{
                         'dataProjection': "EPSG:4326",
                         'featureProjection': "EPSG:3857"});
                     feature[0].setProperties(response[k]);
                     plotnames[response[k].obm_id] = response[k].name;
+                    usernames[response[k].obm_id] = response[k].observer;
                     features.push(feature[0]);
                 }
                 $('#site_name').find('option').remove();
@@ -758,7 +758,10 @@ $minDistanceInput = 1;
                          .append($("<option></option>")
                                     .attr("value", key)
                                     .text(value)); 
-                });  
+                });
+                if (Object.keys(usernames).length==1) {
+                    $('#observer').val(Object.values(usernames)[0]);
+                }
                 clusterSource.getSource().clear(true);
                 clusters.setVisible(true);
                 addClusterFeatures(features);
@@ -768,12 +771,14 @@ $minDistanceInput = 1;
                 let response = [{"obm_id":"1","uploader_name":"B\u00e1n Mikl\u00f3s","uploading_date":"2023-04-02 16:36:22.897174","name":"botkert 1","obm_files_id":"","obm_geometry":"POINT(21.6214855 47.5581552)","observer":"valalki"},{"obm_id":"2","uploader_name":"B\u00e1n Mikl\u00f3s","uploading_date":"2023-04-02 16:36:22.897174","uploading_id":"38134","name":"botkert 2","obm_files_id":"","obm_geometry":"POINT(21.6221461 47.5587459)","observer":"valalki"}];
                 let features = new Array;
                 let plotnames = {};
+                let usernames = {};
                 for (let k=0;k<response.length;k++) {
                     let feature = new ol.format.WKT().readFeatures(response[k].obm_geometry,{
                         'dataProjection': "EPSG:4326",
                         'featureProjection': "EPSG:3857"});
                     feature[0].setProperties(response[k]);
                     plotnames[response[k].obm_id] = response[k].name;
+                    usernames[response[k].obm_id] = response[k].observer;
                     features.push(feature[0]);
                 }
                 $('#site_name').find('option').remove();
@@ -783,6 +788,9 @@ $minDistanceInput = 1;
                                     .attr("value", key)
                                     .text(value)); 
                 });  
+                if (Object.keys(usernames).length==2) {
+                    $('#observer').val(Object.values(usernames)[0]);
+                }
                 clusterSource.getSource().clear(true);
                 clusters.setVisible(true);
                 addClusterFeatures(features);
