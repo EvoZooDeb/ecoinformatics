@@ -8,7 +8,7 @@ function addOption() {
     let reduceButton = document.createElement("button");
     let removeButton = document.createElement("button")
     let inputCounter = document.createElement("div");
-    let counter = 0;
+    let counter = 1;
 
     increaseButton.type = "button";
     increaseButton.innerHTML = " + ";
