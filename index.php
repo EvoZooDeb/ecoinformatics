@@ -67,15 +67,14 @@ $minDistanceInput = 1;
 <div style='min-height:56px'></div>
 <div id="map" class="map"></div>
 <div id='info' style='padding:6px;border-radius:5px;position:fixed;bottom:10px;right:10px;max-height:220px;width:auto;background-color:white;opacity:0.85;z-index:1;overflow-y: auto;'></div>
-<div id='geoinfo' style='padding:6px;border-radius:5px;position:fixed;top:60px;right:5px;background-color:white;opacity:0.85;z-index:1001;overflow-y: auto;'><span id='accuracy'></span> <span id='speed'></span></div>
+<div id='geoinfo' style='padding:6px;border-radius:5px;position:fixed;top:60px;right:5px;background-color:white;opacity:0.85;z-index:1001;overflow-y: auto;user-select:none'><span id='accuracy'></span> <span id='speed'></span></div>
 
 <!--Ide jön a form -->
 <button type="button" id="open-form-button" class="pure-button button-ol button-secondary open-form-button" onclick="showSpeciesForm()"><i class="material-icons" style="font-size:24px;">keyboard_double_arrow_right</i></button>
 <div class="form-container">
+    <div class="resizer" onmousemove="resizeFormWindow()"></div>
     <form action="/action_page.php" class="pure-form species-counter-form">
-        <div style='width:100%'>
-            <select class="pure-button dropdown-menu-js" id="fajok" name="fajok" selected="Válasszon egy fajt..." onchange="addOption()"></select>
-        </div>
+        <select class="pure-button dropdown-menu-js" id="fajok" name="fajok" selected="Válasszon egy fajt..." onchange="addOption()"></select>
     </form>
     <button type="submit" class="pure-button button-success species-form-submit" style="display:none" onclick="submitData()"> Adatok beküldése </button>
     <div class="species-form-close" onclick="hideSpeciesForm()"><i class="material-icons" style="font-size:20px">cancel</i></div>

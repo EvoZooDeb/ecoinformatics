@@ -77,3 +77,26 @@ function submitData() {
     console.log(result);
     return result;
 }
+
+function resizeFormWindow() {
+    let formWindow = document.querySelector(".form-container");
+    let resizer = document.querySelector(".resizer");
+    console.log("added listener");
+
+    const mouseDownHandler = (e) => {
+        document.addEventListener("mousemove", mouseMoveHandler);
+        document.addEventListener("mouseup", mouseUpHandler);
+    }
+
+    const mouseMoveHandler = (e) => {
+        let mouseY = e.clientY;
+        formWindow.style.height = `calc(100% - ${mouseY}px)`;
+    }
+
+    const mouseUpHandler = () => {
+        document.removeEventListener("mouseup", mouseUpHandler);
+        document.removeEventListener("mousemove", mouseMoveHandler);
+    }
+
+    resizer.addEventListener("mousedown", mouseDownHandler);
+}
