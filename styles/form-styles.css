@@ -4,21 +4,35 @@
     bottom: 28em;
 }
 
+.resizer {
+    height: 10px;
+    width: 75px;
+    background-color: rgb(68, 68, 68);
+    border: 1px solid rgb(68, 68, 68);
+    border-radius: 5px;
+    cursor: s-resize;
+    z-index: 1;
+}
+
 .form-container {
+    display: flex;
+    align-items: center;
     flex-direction: column;
     user-select: none;
     background: transparent;
     background-size: cover;
-    min-height: 30em;
+    height: 600px;
     max-height: 80%;
+    min-height: 200px;
+    width: 400px;
     padding: 1em;
     position: absolute;
     bottom: 0;
     left: 0;
     background-color: rgba(0, 60, 136, 0.5);
     overflow: auto;
-    border-right:1px solid rgb(0,60,136);
-    border-top:1px solid rgb(0,60,136);
+    border-right: 1px solid rgb(0, 60, 136);
+    border-top: 1px solid rgb(0, 60, 136);
 }
 
 .species-counter-form {
@@ -26,16 +40,13 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
-}
-
-.species-counter-form label {
-    display: block;
+    width: 100%;
 }
 
 .species-counter-form select {
     display: block;
     margin: 1em 0px;
-    width:100%;
+    width: 100%;
 }
 
 .choose-species {
@@ -77,7 +88,6 @@
 .species-form-close {
     height: 30px;
     width: 30px;
- /*   color: rgb(255, 78, 78);*/
     position: absolute;
     top: 0;
     right: 0;
@@ -96,4 +106,12 @@
     margin: 20px 0px;
     align-self: center;
     display: none;
+}
+
+@media screen and (max-width: 500px) {
+    .form-container {
+        margin: none;
+        padding: none;
+        width: 100dvw;
+    }
 }
