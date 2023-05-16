@@ -1,7 +1,16 @@
+var specieslist = {};
 function addOption() {
 
-    let formContainer = document.querySelector(".species-counter-form");
     let chosenSpeciesName = document.querySelector(".dropdown-menu-js").value;
+
+    let n = specieslist.length();
+    specieslist[chosenSpeciesName] = 1;
+
+    if (specieslist.length() == n) {
+        return;
+    }
+
+    let formContainer = document.querySelector(".species-counter-form");
 
     let newBox = document.createElement("div");
     let increaseButton = document.createElement("button");
