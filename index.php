@@ -55,6 +55,12 @@ $minDistanceInput = 1;
   <title><?php echo PROJECTTABLE ?></title>
 </head>
 <body>
+
+<datalist id="hazimeh-list">
+  <option value="Apis mellifera carnica" />
+  <option value="Melis mellifera mellifera" />
+</datalist>
+
 <header class="header">
     <h1><form id='sample_site' class=""> 
         <select id='site_name' class="" name="site_name" selected="<?php echo ucfirst(LOCATION) ?>"><option><?php echo ucfirst(LOCATION) ?></option></select>

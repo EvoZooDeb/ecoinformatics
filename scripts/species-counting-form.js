@@ -1,19 +1,55 @@
 var specieslist = {};
 
+$(document).ready(function(){
+    $('body').on('click','.input-counter',function(){
+        $(this).val('');
+    });
+});
+
+function nameUpdate(chosenSpeciesName) {
+    let inputCounter = document.querySelector("#" + chosenSpeciesName);
+    let inputCounter_value = inputCounter.value;
+    let counter = inputCounter.getAttribute('data-counter');
+    let name = inputCounter.getAttribute('data-name');
+    let id = inputCounter.value.replace(" ","_");
+    
+    if (counter == 1) {
+        inputCounter.setAttribute('data-name',inputCounter.value);
+        inputCounter.setAttribute('value',`${inputCounter_value}: ${counter}`);
+        inputCounter.setAttribute('id',id);
+        inputCounter.value =`${inputCounter_value}: ${counter}`;
+
+        increaseButton = inputCounter.nextElementSibling;
+        reduceButton = inputCounter.previousElementSibling;
+        increaseButton.onclick = () => speciesCounter(id,'plus');
+        reduceButton.onclick = () => speciesCounter(id,'minus');
+
+        delete specieslist[chosenSpeciesName];
+        specieslist[id] = 1;
+
+    } else {
+        inputCounter.value =`${name}: ${counter}`;
+        addOption(inputCounter_value);
+    }
+}
 function speciesCounter(chosenSpeciesName,direction) {
 
     let inputCounter = document.querySelector("#" + chosenSpeciesName);
-    counter = inputCounter.getAttribute('data-counter');
-    name = inputCounter.getAttribute('data-name');
+    let inputCounter_value = inputCounter.value;
+    let counter = inputCounter.getAttribute('data-counter');
+    let name = inputCounter.getAttribute('data-name');
+
     if (direction == 'plus') {
         ++counter;
-        inputCounter.innerHTML = `${name}: ${counter}`;
+        inputCounter.value = `${name}: ${counter}`;
+        //inputCounter.setAttribute('value',`${name}: ${counter}`);
         inputCounter.setAttribute('data-counter',counter);
     }
     else {
         --counter;
         if (counter > 0) {
-            inputCounter.innerHTML = `${name}: ${counter}`;
+            //inputCounter.setAttribute('value',`${name}: ${counter}`);
+            inputCounter.value =`${name}: ${counter}`;
             inputCounter.setAttribute('data-counter',counter);
         } else {
             if (confirm("Biztosan eltávolítod a listából a " + name + "?")) {
@@ -28,11 +64,18 @@ function speciesCounter(chosenSpeciesName,direction) {
     }
 
 }
-function addOption() {
+function addOption(value=null) {
 
-    let chosenSpecies = document.getElementById('fajok');
-    let chosenSpeciesName = document.querySelector(".dropdown-menu-js").value;
-    let chosenSpeciesNameLabel = fajok.options[fajok.selectedIndex].text;
+    let chosenSpeciesName;
+    let chosenSpeciesNameLabel;
+    if (value === null) {
+        //let chosenSpecies = document.getElementById('fajok');
+        chosenSpeciesName = document.querySelector(".dropdown-menu-js").value;
+        chosenSpeciesNameLabel = fajok.options[fajok.selectedIndex].text;
+    } else {
+        chosenSpeciesNameLabel = value;
+        chosenSpeciesName = chosenSpeciesNameLabel.replace(" ","_");
+    }
 
     let n = Object.keys(specieslist).length;
     specieslist[chosenSpeciesName] = 1;
@@ -49,23 +92,28 @@ function addOption() {
 
     let reduceButton = document.createElement("button");
     let removeButton = document.createElement("button")
-    let inputCounter = document.createElement("div");
+    let inputCounter = document.createElement("input");
     inputCounter.setAttribute('id',chosenSpeciesName);
     inputCounter.setAttribute('data-counter',1)
     inputCounter.setAttribute('data-name',chosenSpeciesNameLabel)
+    inputCounter.setAttribute('value',`${chosenSpeciesNameLabel}: 1`);
+    inputCounter.setAttribute('list',`${chosenSpeciesName}-list`);
+    inputCounter.className = "input-counter";
+    inputCounter.onchange = () => nameUpdate(chosenSpeciesName);
 
     increaseButton.type = "button";
+    increaseButton.className = "input-plus";
     increaseButton.setAttribute('style','width:4em');
+    //increaseButton.setAttribute('data-id',chosenSpeciesName)
     increaseButton.innerHTML = " + ";
     increaseButton.onclick = () => speciesCounter(chosenSpeciesName,'plus');
 
     reduceButton.type = "button";
+    reduceButton.className = "input-minus";
+    //reduceButton.setAttribute('data-id',chosenSpeciesName)
     reduceButton.setAttribute('style','width:4em');
     reduceButton.innerHTML = "  -  ";
     reduceButton.onclick = () => speciesCounter(chosenSpeciesName,'minus');
-
-    inputCounter.className = "input-counter";
-    inputCounter.innerHTML = `${chosenSpeciesNameLabel}: 1`;
 
     if (chosenSpeciesName !== "undefined") {
         newBox.className = "counter-element";
