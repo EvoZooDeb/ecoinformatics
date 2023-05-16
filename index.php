@@ -128,7 +128,7 @@ $minDistanceInput = 1;
 <script src="scripts/auth.js"></script>
 <script src="scripts/map_init.js"></script>
 <script src="scripts/map_wms_fetch.js"></script>
-<script src="scripts/map_load.js"></script>
+<script src="scripts/map_load.js?v2"></script>
 
 <script>
     // <!-- Register service worker. --->

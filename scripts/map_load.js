@@ -268,7 +268,7 @@
         let polygonFeature;
         let extent = map.getView().calculateExtent(map.getSize());
         let polygon = new ol.geom.Polygon.fromExtent(extent);
-        polygon.scale(0.85, 0.85)
+        polygon.scale(0.5, 0.5)
         features = [new ol.Feature(polygon)];
         drawSource.addFeatures(features);
         polygonFeature = new ol.Feature(new ol.geom.Polygon(features[0].getGeometry().getCoordinates()));
