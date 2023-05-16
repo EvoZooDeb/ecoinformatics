@@ -1,12 +1,44 @@
 var specieslist = {};
+
+function speciesCounter(chosenSpeciesName,direction) {
+
+    let inputCounter = document.querySelector("#" + chosenSpeciesName);
+    counter = inputCounter.getAttribute('data-counter');
+    name = inputCounter.getAttribute('data-name');
+    if (direction == 'plus') {
+        ++counter;
+        inputCounter.innerHTML = `${name}: ${counter}`;
+        inputCounter.setAttribute('data-counter',counter);
+    }
+    else {
+        --counter;
+        if (counter > 0) {
+            inputCounter.innerHTML = `${name}: ${counter}`;
+            inputCounter.setAttribute('data-counter',counter);
+        } else {
+            if (confirm("Biztosan eltávolítod a listából a " + name + "?")) {
+                inputCounter.parentElement.remove();
+                delete specieslist[chosenSpeciesName];
+                if (document.getElementsByClassName("counter-element").length === 0) {
+                    submitButton = document.querySelector(".species-form-submit");
+                    submitButton.style.display = "none";
+                }
+            }
+        }
+    }
+
+}
 function addOption() {
 
+    let chosenSpecies = document.getElementById('fajok');
     let chosenSpeciesName = document.querySelector(".dropdown-menu-js").value;
+    let chosenSpeciesNameLabel = fajok.options[fajok.selectedIndex].text;
 
     let n = Object.keys(specieslist).length;
     specieslist[chosenSpeciesName] = 1;
 
     if (Object.keys(specieslist).length == n) {
+        speciesCounter(chosenSpeciesName,'plus');
         return;
     }
 
@@ -14,42 +46,32 @@ function addOption() {
 
     let newBox = document.createElement("div");
     let increaseButton = document.createElement("button");
+
     let reduceButton = document.createElement("button");
     let removeButton = document.createElement("button")
     let inputCounter = document.createElement("div");
-    let counter = 1;
+    inputCounter.setAttribute('id',chosenSpeciesName);
+    inputCounter.setAttribute('data-counter',1)
+    inputCounter.setAttribute('data-name',chosenSpeciesNameLabel)
 
     increaseButton.type = "button";
+    increaseButton.setAttribute('style','width:4em');
     increaseButton.innerHTML = " + ";
-    increaseButton.onclick = () => { inputCounter.innerHTML = `${chosenSpeciesName}: ${++counter}` };
+    increaseButton.onclick = () => speciesCounter(chosenSpeciesName,'plus');
 
     reduceButton.type = "button";
-    reduceButton.innerHTML = " - ";
-    reduceButton.onclick = () => {
-        if (counter > 0) { inputCounter.innerHTML = `${chosenSpeciesName}: ${--counter}` }
-    };
-
-    removeButton.type = "button";
-    removeButton.innerHTML = " x ";
-    removeButton.onclick = () => {
-        if (confirm("Eltávolítja ezt a fajt?")) {
-            newBox.remove()
-            if (document.getElementsByClassName("counter-element").length === 0) {
-                submitButton = document.querySelector(".species-form-submit");
-                submitButton.style.display = "none";
-            }
-        }
-    }
+    reduceButton.setAttribute('style','width:4em');
+    reduceButton.innerHTML = "  -  ";
+    reduceButton.onclick = () => speciesCounter(chosenSpeciesName,'minus');
 
     inputCounter.className = "input-counter";
-    inputCounter.innerHTML = `${chosenSpeciesName}: ${counter}`;
+    inputCounter.innerHTML = `${chosenSpeciesNameLabel}: 1`;
 
     if (chosenSpeciesName !== "undefined") {
         newBox.className = "counter-element";
         newBox.appendChild(reduceButton);
         newBox.appendChild(inputCounter);
         newBox.appendChild(increaseButton);
-        newBox.appendChild(removeButton);
 
         formContainer.appendChild(newBox);
     }

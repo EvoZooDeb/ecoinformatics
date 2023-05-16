@@ -79,7 +79,7 @@ $minDistanceInput = 1;
     <button type="submit" class="pure-button button-success species-form-submit" style="display:none" onclick="submitData()"> Adatok beküldése </button>
     <div class="species-form-close" onclick="hideSpeciesForm()"><i class="material-icons" style="font-size:20px">cancel</i></div>
 </div>
-<script src="./scripts/species-counting-form.js?v2"></script>
+<script src="./scripts/species-counting-form.js?v3"></script>
 <script src="./scripts/species-form-dropdown-content.js?v4"></script>
 
 <div id="myAuthModal" class="modal">
