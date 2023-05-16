@@ -3,10 +3,10 @@ function addOption() {
 
     let chosenSpeciesName = document.querySelector(".dropdown-menu-js").value;
 
-    let n = specieslist.length();
+    let n = Object.keys(specieslist).length;
     specieslist[chosenSpeciesName] = 1;
 
-    if (specieslist.length() == n) {
+    if (Object.keys(specieslist).length == n) {
         return;
     }
 
